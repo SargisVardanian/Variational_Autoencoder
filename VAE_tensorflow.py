@@ -58,8 +58,8 @@ class VAE(tf.keras.Model):
 
 
 
-from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, Flatten, Dense, Reshape, Conv2DTranspose, Lambda
-import tensorflow.keras.backend as K
+from keras.layers import Input, Conv2D, MaxPooling2D, Flatten, Dense, Reshape, Conv2DTranspose, Lambda
+import keras.backend as K
 
 # Define the encoder model
 encoder_inputs = Input(shape=(image_h, image_w, 3))
