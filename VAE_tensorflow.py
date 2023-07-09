@@ -11,9 +11,9 @@ data = np.load('lfw_data.npy')
 attrs = pd.read_csv('lfw_attributes.csv')
 # data = data.astype(np.float32)
 
-X_train = data[:10000].reshape((10000, -1))
+X_train = data[:10000].reshape((-1, 45, 45, 3))
 print(X_train.shape)
-X_val = data[10000:].reshape((-1, X_train.shape[1]))
+X_val = data[10000:].reshape((-1, 45, 45, 3))
 print(X_val.shape)
 X_train = np.float32(X_train)
 X_train = X_train/255
