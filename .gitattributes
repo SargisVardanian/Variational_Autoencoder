@@ -4,3 +4,5 @@ lfw_attributes.npy filter=lfs diff=lfs merge=lfs -text
 checkpoints filter=lfs diff=lfs merge=lfs -text
 ckpt-4.data-00000-of-00001 filter=lfs diff=lfs merge=lfs -text
 ckpt-4.index filter=lfs diff=lfs merge=lfs -text
+checkpoints/ckpt-4.data-00000-of-00001 filter=lfs diff=lfs merge=lfs -text
+checkpoints/ckpt-70.data-00000-of-00001 filter=lfs diff=lfs merge=lfs -text
