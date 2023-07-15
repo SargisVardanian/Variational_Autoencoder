@@ -36,36 +36,10 @@ IMG_SHAPE = data.shape[1:]
 print(f'IMG_SHAPE{IMG_SHAPE}')
 hidd = 256
 
-image_h = data.shape[1]
-image_w = data.shape[2]
-
-encoder_inputs = L.Input(shape=(image_h, image_w, 3))
-x = L.Conv2D(32, (3, 3), activation='relu', padding='same')(encoder_inputs)
-x = L.MaxPooling2D((2, 2))(x)
-x = L.Conv2D(64, (3, 3), activation='relu', padding='same')(x)
-x = L.MaxPooling2D((2, 2))(x)
-x = L.Flatten()(x)
-z_mean = L.Dense(hidd, activation='relu', kernel_initializer='glorot_uniform', bias_initializer='zeros')(x)
-z_log_var = L.Dense(hidd, activation='relu', kernel_initializer='glorot_uniform', bias_initializer='zeros')(x)
-
-# Define the sampling layer
-def sampling(args):
-    z_mean, z_log_var = args
-    epsilon = K.random_normal(shape=(K.shape(z_mean)[0], hidd), mean=0., stddev=1.)
-    return z_mean + K.exp(0.5 * z_log_var) * epsilon
-
-z = L.Lambda(sampling)([z_mean, z_log_var])
-
-# Define the encoder model
-encoder = tf.keras.Model(encoder_inputs, [z_mean, z_log_var, z])
 
 
 print("GAN generator")
-
 decoder_inputs = L.Input(shape=(hidd,))
-x = L.Dropout(0.5)(x)
-x = L.Dense(512, activation='relu')(x)
-x = L.Dropout(0.5)(x)
 x = L.Dense(256, activation='elu')(decoder_inputs)
 x = L.Dropout(0.5)(x)
 x = L.BatchNormalization()(x)
@@ -85,11 +59,7 @@ x = L.BatchNormalization()(x)
 x = L.Conv2D(3, (7, 7), strides=(1, 1), activation='sigmoid')(x)
 decoder_outputs = x
 
-
-
-
 generator = tf.keras.Model(decoder_inputs, decoder_outputs)
-
 
 print("GAN discriminator")
 discriminator = Sequential()
@@ -179,19 +149,14 @@ def generator_loss(fake_output):
 #     return tf.reduce_mean(fake_output) - tf.reduce_mean(real_output)
 
 
-generator_optimizer = tf.keras.optimizers.Adam(learning_rate=1e-5, clipvalue=0.8)
-discriminator_optimizer = tf.keras.optimizers.Adam(learning_rate=1e-6, clipvalue=0.6)
+generator_optimizer = tf.keras.optimizers.Adam(learning_rate=1e-6, clipvalue=0.8)
+discriminator_optimizer = tf.keras.optimizers.Adam(learning_rate=1e-7, clipvalue=0.6)
 
 @tf.function
 def train_step(images, batch_size, epoch):
     noise = sample_noise_batch(batch_size)
     with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
-        z_mean, z_log_var, z = encoder(images, training=True)
-
-        if epoch // 2 == 1:
-            generated_images = generator(z, training=True)
-        else:
-            generated_images = generator(noise, training=True)
+        generated_images = generator(noise, training=True)
 
         real_output = discriminator(images, training=True)
         fake_output = discriminator(generated_images, training=True)
