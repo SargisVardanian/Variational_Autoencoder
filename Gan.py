@@ -179,8 +179,8 @@ def generator_loss(fake_output):
 #     return tf.reduce_mean(fake_output) - tf.reduce_mean(real_output)
 
 
-generator_optimizer = tf.keras.optimizers.Adam(learning_rate=1e-5, clipvalue=0.6)
-discriminator_optimizer = tf.keras.optimizers.Adam(learning_rate=1e-5, clipvalue=0.6)
+generator_optimizer = tf.keras.optimizers.Adam(learning_rate=1e-5, clipvalue=0.8)
+discriminator_optimizer = tf.keras.optimizers.Adam(learning_rate=1e-6, clipvalue=0.6)
 
 @tf.function
 def train_step(images, batch_size, epoch):
