@@ -4,7 +4,6 @@ import os
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
-
 data = np.load('lfw_data.npy')
 data = np.float32(data[:6000]) / 255.
 
